@@ -4,20 +4,27 @@
     <el-card>
       <!-- 黑马头条  图片 -->
       <img src="../../assets/logo_index.png" width="200px" alt />
-      <!-- 输入框 -->
-      <el-form ref="form" :model="form">
-        <el-form-item>
-          <el-input v-model="form.phone" placeholder="请输入手机号"></el-input>
+      <!--
+        输入框
+
+      -->
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" status-icon>
+        <el-form-item prop="mobile">
+          <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model="form.code" placeholder="请输入验证码" style="width:235px;margin-right:10px"></el-input>
-          <el-button>发送验证码</el-button>
+        <el-form-item prop="code">
+          <el-input
+            v-model="loginForm.code"
+            placeholder="请输入验证码"
+            style="width:235px;margin-right:10px"
+          ></el-input>
+          <el-button type="danger" plain style="width:115px">发送验证码</el-button>
         </el-form-item>
         <el-form-item>
           <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="width:100%">立即登录</el-button>
+          <el-button @click="login" type="danger" style="width:100%">立即登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -27,11 +34,49 @@
 <script>
 export default {
   data () {
-    return {
-      form: {
-        phone: '',
-        code: ''
+    // 校验手机号的函数
+    const checkMobile = (rule, value, callback) => {
+      if (/^1[3-9]\d{9}$/.test(value)) {
+        callback()
+      } else {
+        callback(new Error('手机号格式不对'))
       }
+    }
+
+    return {
+      loginForm: {
+        mobile: '',
+        code: ''
+      },
+      loginRules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '验证码6个字符', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    login () {
+      this.$refs['loginForm'].validate(valid => {
+        if (valid) {
+          // 发请求 校验手机号和验证码  后台
+          this.$http
+            .post('authorizations', this.loginForm)
+            .then(res => {
+              // 成功
+              this.$router.push('/')
+            })
+            .catch(() => {
+              // 失败 提示
+              this.$message.error('手机号或验证码错误')
+            })
+        }
+      })
     }
   }
 }
@@ -51,6 +96,7 @@ export default {
   width: 400px;
   height: 350px;
   position: absolute;
+  opacity: 0.7;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
