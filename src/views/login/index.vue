@@ -3,28 +3,36 @@
     <!-- 登录卡片 -->
     <el-card>
       <!-- 黑马头条  图片 -->
-      <img src="../../assets/logo_index.png" width="200px" alt />
+      <img src="../../assets/logo_index.png"
+           width="200px"
+           alt />
       <!--
         输入框
 
       -->
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" status-icon>
+      <el-form ref="loginForm"
+               :model="loginForm"
+               :rules="loginRules"
+               status-icon>
         <el-form-item prop="mobile">
-          <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
+          <el-input v-model="loginForm.mobile"
+                    placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <el-input
-            v-model="loginForm.code"
-            placeholder="请输入验证码"
-            style="width:235px;margin-right:10px"
-          ></el-input>
-          <el-button type="danger" plain style="width:115px">发送验证码</el-button>
+          <el-input v-model="loginForm.code"
+                    placeholder="请输入验证码"
+                    style="width:235px;margin-right:10px"></el-input>
+          <el-button type="danger"
+                     plain
+                     style="width:115px">发送验证码</el-button>
         </el-form-item>
         <el-form-item>
           <el-checkbox :value="true">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button @click="login" type="danger" style="width:100%">立即登录</el-button>
+          <el-button @click="login"
+                     type="danger"
+                     style="width:100%">立即登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -32,6 +40,8 @@
 </template>
 
 <script>
+import local from '@/utils/local.js'
+
 export default {
   data () {
     // 校验手机号的函数
@@ -45,8 +55,8 @@ export default {
 
     return {
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111',
+        code: '246810'
       },
       loginRules: {
         mobile: [
@@ -62,19 +72,17 @@ export default {
   },
   methods: {
     login () {
-      this.$refs['loginForm'].validate(valid => {
+      // 获取表单组件实例 ---> 调用校验函数
+      this.$refs['loginForm'].validate(async valid => {
         if (valid) {
-          // 发请求 校验手机号和验证码  后台
-          this.$http
-            .post('authorizations', this.loginForm)
-            .then(res => {
-              // 成功
-              this.$router.push('/')
-            })
-            .catch(() => {
-              // 失败 提示
-              this.$message.error('手机号或验证码错误')
-            })
+          // 当一段代码不能保证一定没有报错  try {} catch (e) {} 捕获异常处理异常
+          try {
+            const { data: { data } } = await this.$http.post('authorizations', this.loginForm)
+            local.setUser(data)
+            this.$router.push('/')
+          } catch (e) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }
@@ -96,7 +104,8 @@ export default {
   width: 400px;
   height: 350px;
   position: absolute;
-  opacity: 0.7;
+  opacity: 0.5;
+  background-color: black;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

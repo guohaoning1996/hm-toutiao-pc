@@ -3,19 +3,18 @@
     <el-container class="container">
       <el-aside :width="isOpen?'200px':'64px'">
         <div>
-          <div class="logo" :class="{smallLogo:!isOpen}"></div>
+          <div class="logo"
+               :class="{smallLogo:!isOpen}"></div>
         </div>
 
-        <el-menu
-          default-active="/"
-          background-color="#002033"
-          text-color="#fff"
-          active-text-color="#ffd04b"
-          :collapse="!isOpen"
-          :collapse-transition="false"
-          style="border-right:none"
-          router
-        >
+        <el-menu :default-active="$route.path"
+                 background-color="#002033"
+                 text-color="#fff"
+                 active-text-color="#ffd04b"
+                 :collapse="!isOpen"
+                 :collapse-transition="false"
+                 style="border-right:none"
+                 router>
           <el-menu-item index="/">
             <i class="el-icon-s-home"></i>
             <span slot="title">首页</span>
@@ -48,22 +47,28 @@
       </el-aside>
       <el-container>
         <el-header>
-          <span class="el-icon-s-fold icon" @click="toggleMenu"></span>
+          <span class="el-icon-s-fold icon"
+                @click="toggleMenu"></span>
           <span class="text">江苏传智播客科技教育有限公司</span>
           <el-dropdown class="dropdown">
             <span class="el-dropdown-link">
-              <img class="headIcon" src="../../assets/avatar.jpg" alt />
-              <span class="userName">用户名称</span>
+              <img class="headIcon"
+                   :src="userInfo.photo"
+                   alt />
+              <span class="userName">{{userInfo.name}}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-              <el-dropdown-item icon="el-icon-unlock">退出登录</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-setting"
+                                @click.native="setting">个人设置</el-dropdown-item>
+              <el-dropdown-item icon="el-icon-unlock"
+                                @click.native="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-header>
         <el-main>
-          <img src="../../assets/welcome.jpg" class="senter" alt />
+          <router-view></router-view>
+
         </el-main>
       </el-container>
     </el-container>
@@ -71,16 +76,31 @@
 </template>
 
 <script>
+import local from '@/utils/local'
 export default {
   data () {
     return {
-      isOpen: true
+      isOpen: true,
+      userInfo: {}
     }
+  },
+  created () {
+    // 设置用户信息
+    const user = local.getUser() || {}
+    this.userInfo.name = user.name
+    this.userInfo.photo = user.photo
   },
   methods: {
     toggleMenu () {
       // 切换左菜单 展开与收起
       this.isOpen = !this.isOpen
+    },
+    setting () {
+      this.$router.push('/setting')
+    },
+    logout () {
+      local.delUser()
+      this.$router.push('/login')
     }
   }
 }

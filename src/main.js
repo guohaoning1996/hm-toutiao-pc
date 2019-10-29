@@ -4,9 +4,10 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from '@/router'
 import axios from '@/api'
+import myBread from '@/components/my-bread/index.js'
+Vue.use(myBread)
 Vue.prototype.$http = axios
 Vue.use(ElementUI)
-
 Vue.config.productionTip = false
 
 new Vue({
