@@ -1,6 +1,10 @@
 import axios from 'axios'
 import router from '../router/index'
 import local from '../utils/local'
+import JSONBIG from 'json-bigint'
+axios.defaults.transformResponse = [(data) => {
+  return JSONBIG.parse(data)
+}]
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 
 axios.interceptors.request.use((config) => {
