@@ -6,6 +6,11 @@ import NotFound from '@/views/404'
 import local from '@/utils/local'
 import Article from '@/views/article'
 import welcome from '@/views/welcome'
+import Image from '@/views/image'
+import Publish from '@/views/publish'
+import comment from '@/views/comment'
+import setting from '@/views/setting'
+import fans from '@/views/fans'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -16,13 +21,15 @@ const router = new VueRouter({
   {
     path: '/',
     component: home,
-    children: [{
-      path: '',
-      component: welcome
-    }, {
-      path: '/article',
-      component: Article
-    }]
+    children: [
+      { path: '', component: welcome },
+      { path: '/article', component: Article },
+      { path: '/image', component: Image },
+      { path: '/publish', component: Publish },
+      { path: '/comment', component: comment },
+      { path: '/setting', component: setting },
+      { path: '/fans', component: fans }
+    ]
   },
   {
     path: '*',

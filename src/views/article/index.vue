@@ -18,14 +18,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="reqParams.channel_id"
-                     placeholder="请选择"
-                     clearable>
-            <el-option v-for="item in channelOptions"
-                       :key="item.id"
-                       :label="item.name"
-                       :value="item.id"></el-option>
-          </el-select>
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label="日期">
           <!-- v-model 绑定的数组  [起始时间,结束时间] -->

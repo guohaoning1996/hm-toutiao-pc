@@ -1,9 +1,14 @@
 import axios from 'axios'
 import router from '../router/index'
 import local from '../utils/local'
+// 插件  作用转换响应体 防止出现最大安全值的问题
 import JSONBIG from 'json-bigint'
 axios.defaults.transformResponse = [(data) => {
-  return JSONBIG.parse(data)
+  if (data) {
+    return JSONBIG.parse(data)
+  } else {
+    return data
+  }
 }]
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 

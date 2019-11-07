@@ -104,8 +104,6 @@ export default {
   width: 400px;
   height: 350px;
   position: absolute;
-  opacity: 0.5;
-  background-color: black;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
